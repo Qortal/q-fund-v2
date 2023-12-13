@@ -13,6 +13,8 @@ import {
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { TimesSVG } from "../../assets/svgs/TimesSVG";
 import BoundedNumericTextField from "../../utils/BoundedNumericTextField";
+import { changeLightness } from "../../utils/numberFunctions.ts";
+import { CSSProperties } from "react";
 
 export const DoubleLine = styled(Typography)`
   display: -webkit-box;
@@ -350,6 +352,13 @@ export const CATContainer = styled(Box)(({ theme }) => ({
   alignItems: "center",
 }));
 
+export const setButtonHoverColor = (color: string) => {
+  return { backgroundColor: color, "&:hover": changeLightness(color, -10) };
+};
+
+const startQfundColor = "#54b9f8";
+console.log(startQfundColor);
+const buttonColors = setButtonHoverColor(startQfundColor);
 export const AddCrowdFundButton = styled(Button)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -358,15 +367,13 @@ export const AddCrowdFundButton = styled(Button)(({ theme }) => ({
   fontSize: "15px",
   gap: "8px",
   color: "#ffffff",
-  backgroundColor:
-    theme.palette.mode === "dark" ? theme.palette.primary.main : "#2a9a86",
+  backgroundColor: startQfundColor,
   border: "none",
   borderRadius: "5px",
   transition: "all 0.3s ease-in-out",
   "&:hover": {
     cursor: "pointer",
-    backgroundColor:
-      theme.palette.mode === "dark" ? theme.palette.primary.dark : "#217e6d",
+    backgroundColor: changeLightness(startQfundColor, -10),
   },
 }));
 
@@ -493,6 +500,7 @@ export const CrowdfundAccordionDetails = styled(AccordionDetails)({
   padding: "0px 16px 16px 16px",
 });
 
+export const actionButtonColor = "#34BFA6";
 export const AddCoverImageButton = styled(Button)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -502,6 +510,10 @@ export const AddCoverImageButton = styled(Button)(({ theme }) => ({
   letterSpacing: "0.2px",
   color: "white",
   gap: "5px",
+  backgroundColor: startQfundColor,
+  "&:hover": {
+    backgroundColor: changeLightness(startQfundColor, -10),
+  },
 }));
 
 export const CoverImage = styled("img")({
@@ -518,7 +530,7 @@ export const CrowdfundActionButtonRow = styled(Box)({
   width: "100%",
 });
 
-export const CrowdfundActionButton = styled(Button)(({ theme }) => ({
+const actionButtonStyle = {
   display: "flex",
   alignItems: "center",
   fontFamily: "Montserrat",
@@ -527,25 +539,44 @@ export const CrowdfundActionButton = styled(Button)(({ theme }) => ({
   letterSpacing: "0.2px",
   color: "white",
   gap: "5px",
+};
+
+const cancelButtonColor = "#B00020";
+export const CrowdfundActionButton = styled(Button)(({ theme }) => ({
+  ...actionButtonStyle,
+  backgroundColor: actionButtonColor,
+  "&:hover": {
+    backgroundColor: changeLightness(actionButtonColor, -10),
+  },
 }));
 
+export const CancelActionButton = styled(Button)(({ theme }) => ({
+  ...actionButtonStyle,
+  backgroundColor: cancelButtonColor,
+  "&:hover": {
+    backgroundColor: changeLightness(cancelButtonColor, -10),
+  },
+}));
+
+const homeButtonColor = "#8B4513";
 export const BackToHomeButton = styled(Button)(({ theme }) => ({
   position: "absolute",
-  top: "20px",
+  top: "5px",
   left: "20px",
+  height: "40px",
   display: "flex",
   alignItems: "center",
   fontFamily: "Montserrat",
-  fontSize: "13px",
+  fontSize: "16px",
   fontWeight: 400,
   letterSpacing: "0.2px",
   color: "white",
   gap: "5px",
   padding: "5px 10px",
-  backgroundColor: theme.palette.secondary.main,
+  backgroundColor: homeButtonColor,
   transition: "all 0.3s ease-in-out",
   "&:hover": {
-    backgroundColor: theme.palette.secondary.dark,
+    backgroundColor: changeLightness(homeButtonColor, -10),
     cursor: "pointer",
   },
 }));

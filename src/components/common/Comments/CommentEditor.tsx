@@ -6,7 +6,7 @@ import ShortUniqueId from "short-unique-id";
 import { setNotification } from "../../../state/features/notificationsSlice";
 import { toBase64 } from "../../../utils/toBase64";
 import localforage from "localforage";
-import { COMMENT_BASE } from "../../../constants";
+import { COMMENT_BASE } from "../../../constants/Identifiers.ts";
 import {
   CommentInput,
   CommentInputContainer,
@@ -29,11 +29,13 @@ export interface Item {
 
 export async function addItem(item: Item): Promise<void> {
   // Get all items
-  let notificationComments: Item[] =
+  const notificationComments: Item[] =
     (await notification.getItem("comments")) || [];
 
   // Find the item with the same id, if it exists
-  let existingItemIndex = notificationComments.findIndex(i => i.id === item.id);
+  const existingItemIndex = notificationComments.findIndex(
+    i => i.id === item.id
+  );
 
   if (existingItemIndex !== -1) {
     // If the item exists, update its date
@@ -54,10 +56,10 @@ export async function addItem(item: Item): Promise<void> {
 }
 export async function updateItemDate(item: any): Promise<void> {
   // Get all items
-  let notificationComments: Item[] =
+  const notificationComments: Item[] =
     (await notification.getItem("comments")) || [];
 
-  let notificationCreatorComment: any =
+  const notificationCreatorComment: any =
     (await notification.getItem("post-comments")) || {};
   const findPostId = notificationCreatorComment[item.postId];
   if (findPostId) {
@@ -124,7 +126,9 @@ export const CommentEditor = ({
     let name;
     let errorMsg = "";
 
+    // eslint-disable-next-line prefer-const
     address = user?.address;
+    // eslint-disable-next-line prefer-const
     name = user?.name || "";
 
     if (!address) {

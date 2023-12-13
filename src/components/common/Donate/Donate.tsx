@@ -15,12 +15,17 @@ import Portal from "../Portal";
 import { setNotification } from "../../../state/features/notificationsSlice";
 import {
   CrowdfundPageDonateButton,
+  donateButtonColor,
   DonateModalCol,
   DonateModalLabel,
 } from "./Donate-styles";
 import { QortalSVG } from "../../../assets/svgs/QortalSVG";
 import BoundedNumericTextField from "../../../utils/BoundedNumericTextField";
-import { getUserBalance, truncateNumber } from "qortal-app-utils";
+import { getUserBalance } from "../../../utils/qortalRequestFunctions.ts";
+import {
+  changeLightness,
+  truncateNumber,
+} from "../../../utils/numberFunctions.ts";
 
 interface DonateProps {
   atAddress: string;
@@ -41,6 +46,11 @@ export const Donate = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [currentBalance, setCurrentBalance] = useState<string>("");
+  const [disableDonation, setDisableDonation] = useState<boolean>(true);
+
+  const emptyDonationHelperText = "Donation amount must not be empty";
+
+  const [helperText, setHelperText] = useState<string>(emptyDonationHelperText);
   const resetValues = () => {
     setAmount(0);
     setIsOpen(false);
@@ -126,6 +136,18 @@ export const Donate = ({
       dispatch(setNotification(notificationObj));
     }
   };
+
+  const allowDonationIfSafe = async (value: number) => {
+    if (isNaN(value) || value === 0) {
+      setDisableDonation(true);
+      setHelperText(emptyDonationHelperText);
+    } else {
+      setDisableDonation(false);
+      setHelperText("");
+    }
+    setAmount(value);
+  };
+
   useEffect(() => {
     getUserBalance().then(foundBalance => {
       setCurrentBalance(truncateNumber(foundBalance, 2));
@@ -180,10 +202,10 @@ export const Donate = ({
                 <BoundedNumericTextField
                   style={{ fontFamily: "Mulish" }}
                   minValue={1}
-                  maxValue={Number.MAX_SAFE_INTEGER}
+                  maxValue={+truncateNumber(currentBalance, 0)}
                   id="standard-adornment-amount"
                   value={amount}
-                  onChange={value => setAmount(+value)}
+                  onChange={value => allowDonationIfSafe(+value)}
                   variant={"standard"}
                   allowDecimals={false}
                   allowNegatives={false}
@@ -199,6 +221,9 @@ export const Donate = ({
                       </InputAdornment>
                     ),
                   }}
+                  error={disableDonation}
+                  helperText={helperText}
+                  FormHelperTextProps={{ sx: { fontSize: 20 } }}
                 />
               </DonateModalCol>
               {currentBalance ? (
@@ -222,7 +247,14 @@ export const Donate = ({
               <Button
                 variant="contained"
                 onClick={sendCoin}
-                sx={{ color: "white" }}
+                sx={{
+                  color: "white",
+                  backgroundColor: donateButtonColor,
+                  "&:hover": {
+                    backgroundColor: changeLightness(donateButtonColor, -10),
+                  },
+                }}
+                disabled={disableDonation}
               >
                 Send Coin
               </Button>

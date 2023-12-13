@@ -1,5 +1,7 @@
 import { styled } from "@mui/system";
 import { Box, Grid, Typography, Checkbox, Button } from "@mui/material";
+import { donateButtonColor } from "../../components/common/Donate/Donate-styles.tsx";
+import { changeLightness } from "../../utils/numberFunctions.ts";
 
 export const HomepageTitleRow = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -289,16 +291,16 @@ export const DonateButton = styled(Button)(({ theme }) => ({
   width: "44%",
   padding: "5px 25px",
   borderRadius: "20px",
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: donateButtonColor,
   color: "white",
   fontFamily: "Mulish",
-  fontSize: "14px",
+  fontSize: "18px",
   fontWeight: 400,
   letterSpacing: "0.4px",
   textTransform: "none",
   transition: "all 0.3s ease-in-out",
   "&:hover": {
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: changeLightness(donateButtonColor, -10),
     cursor: "pointer",
   },
 }));

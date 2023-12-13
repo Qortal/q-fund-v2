@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  actionButtonColor,
   AddCoverImageButton,
   AddCrowdFundButton,
   AddLogoIcon,
+  CancelActionButton,
   CATContainer,
   CoverImagePreview,
   CrowdfundActionButton,
@@ -27,7 +29,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "../../state/features/notificationsSlice";
 import { objectToBase64, uint8ArrayToBase64 } from "../../utils/toBase64";
 import { RootState } from "../../state/store";
-import { ATTACHMENT_BASE, CROWDFUND_BASE } from "../../constants";
+import {
+  ATTACHMENT_BASE,
+  CROWDFUND_BASE,
+} from "../../constants/Identifiers.ts";
 import dayjs, { Dayjs } from "dayjs";
 import isBetween from "dayjs/plugin/isBetween"; // Import the plugin
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -42,6 +47,11 @@ import {
 import ImageUploader from "../ImageUploader";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { PiggybankSVG } from "../../assets/svgs/PiggybankSVG";
+import { getDaySummary } from "../../utils/time.ts";
+import {
+  changeLightness,
+  truncateNumber,
+} from "../../utils/numberFunctions.ts";
 
 dayjs.extend(isBetween);
 dayjs.extend(duration);
@@ -84,7 +94,9 @@ interface NewCrowdfundProps {
 }
 export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
   const theme = useTheme();
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs().add(5, "day"));
+  const [qFundDuration, setQFundDuration] = React.useState<Dayjs | null>(
+    dayjs().add(5, "day")
+  );
   const [goalValue, setGoalValue] = useState<number | string>("");
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.auth?.user?.name);
@@ -98,6 +110,7 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
   const [inlineContent, setInlineContent] = useState("");
   const [attachments, setAttachments] = useState<any[]>([]);
   const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [blocksPerMinute, setBlocksPerMinute] = useState<number>(1);
   const minGoal = 1;
   const maxGoal = 1_000_000;
 
@@ -114,10 +127,34 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
     setIsOpen(false);
   };
 
+  const minutesPerDay = 60 * 24;
+  const updateBlocksPerMinute = () => {
+    getDaySummary().then(response => {
+      const blockTime = response.blockCount / minutesPerDay;
+      setBlocksPerMinute(blockTime);
+    });
+  };
+
+  const getBlocksInDuration = (minutes: number) => {
+    const blocksInDuration = minutes * blocksPerMinute;
+    return truncateNumber(Math.abs(blocksInDuration), 0);
+  };
+
+  useEffect(() => {
+    updateBlocksPerMinute();
+  }, []);
+
   const diffInMins = React.useMemo(() => {
-    const differenceInMinutes = dayjs().diff(value, "minute");
-    return differenceInMinutes * -1;
-  }, [value]);
+    updateBlocksPerMinute();
+    const blocksInDuration = getBlocksInDuration(
+      dayjs().diff(qFundDuration, "minute")
+    );
+    return +blocksInDuration;
+  }, [qFundDuration, blocksPerMinute]);
+
+  useEffect(() => {
+    updateBlocksPerMinute();
+  }, []);
 
   // Define the type for your POST request body
   interface PostRequestBody {
@@ -158,7 +195,12 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
     }
   }
 
-  const dataBytePlaceholder = [0, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 61, -3, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, -72, -68, -80, 127, 99, 68, -76, 42, -80, 66, 80, -56, 106, 110, -117, 117, -45, -3, -69, -58, 86, -107, -110, 93, 0, 0, 0, 0, 0, 0, 0]
+  const dataBytePlaceholder = [
+    0, 0, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 61, -3, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58,
+    -72, -68, -80, 127, 99, 68, -76, 42, -80, 66, 80, -56, 106, 110, -117, 117,
+    -45, -3, -69, -58, 86, -107, -110, 93, 0, 0, 0, 0, 0, 0, 0,
+  ];
 
   function adjustByteValue(byteValue) {
     return (byteValue + 256) % 256;
@@ -172,7 +214,7 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
     view.setUint32(4, value >>> 0);
 
     for (let i = 0; i < 8; i++) {
-      array[position + i] = view.getInt8(i) & 0xff; // Correctly handle the byte value
+      array[position + i] = view.getInt8(i) & 0xff; // Correctly handle the byte qFundDuration
     }
   }
 
@@ -184,7 +226,7 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
   }
 
   const codeBytes =
-  "NQMBAAAABTUDAAAAAAI3BAYAAAACAAAAAgAAAAACAAAAAwAAAAJLAAAAAwAAAAAAAAAgJQAAAAM1BAAAAAAEIAAAAAQAAAABGTgBHwAAAAAAAAAGMgQDKDA4AR8AAAAAAAAABjIEAyg=";
+    "NQMBAAAABTUDAAAAAAI3BAYAAAACAAAAAgAAAAACAAAAAwAAAAJLAAAAAwAAAAAAAAAgJQAAAAM1BAAAAAAEIAAAAAQAAAABGTgBHwAAAAAAAAAGMgQDKDA4AR8AAAAAAAAABjIEAyg=";
 
   const createBytes = (goalAmount: number, blocks: number, address: string) => {
     try {
@@ -202,8 +244,6 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
       console.error(error);
     }
   };
-
-
 
   async function publishQDNResource() {
     try {
@@ -251,8 +291,8 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
       };
       // CHANGE BACK AFTER TESTING
       // const blocksToGoal = 20;
-      const differenceInMinutes = dayjs().diff(value, "minute");
-      const blocksToGoal = differenceInMinutes * -1;
+      const differenceInMinutes = dayjs().diff(qFundDuration, "minute");
+      const blocksToGoal = Math.abs(differenceInMinutes * blocksPerMinute);
       if (blocksToGoal < 29 || blocksToGoal > 43200)
         throw new Error("end of crowdfund needs to be between 2880 and 43200");
       if (!goalValue) throw new Error("Goal amount must be one or greater!");
@@ -382,7 +422,7 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
       setCoverImage(null);
       setIsOpen(false);
       setGoalValue("");
-      setValue(dayjs().add(5, "day"));
+      setQFundDuration(dayjs().add(5, "day"));
     } catch (error: any) {
       let notificationObj: any = null;
       if (typeof error === "string") {
@@ -520,15 +560,15 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDateTimePicker
               label="End date of crowdfund. Min 2 days Max 30 days"
-              value={value}
-              onChange={newValue => setValue(newValue)}
+              value={qFundDuration}
+              onChange={newValue => setQFundDuration(newValue)}
               minDateTime={minDateTime}
               maxDateTime={maxDateTime}
             />
           </LocalizationProvider>
           <NewCrowdfundTimeDescription>
             Length of crowdfund: {diffInMins} blocks ~{" "}
-            {formatDuration(diffInMins)}
+            {formatDuration(+diffInMins / blocksPerMinute)}
           </NewCrowdfundTimeDescription>
 
           <NewCrowdFundFont>Add necessary files - optional</NewCrowdFundFont>
@@ -544,15 +584,14 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
             modules={modules}
           />
           <CrowdfundActionButtonRow>
-            <CrowdfundActionButton
+            <CancelActionButton
               onClick={() => {
                 onClose();
               }}
               variant="contained"
-              color="error"
             >
               Cancel
-            </CrowdfundActionButton>
+            </CancelActionButton>
             <CrowdfundActionButton
               variant="contained"
               onClick={() => {
