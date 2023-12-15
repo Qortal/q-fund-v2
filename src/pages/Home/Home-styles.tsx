@@ -122,16 +122,16 @@ export const HomePageContainer = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   alignItems: "center",
   width: "100%",
-  gap: "20px",
+  gap: "10px",
   background: "linear-gradient(135deg, #74d7c5 0%, #34bfa6 49%, #159892 100%)",
 }));
 
 export const HomePageSubContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
+  display: "contents",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: "40px",
+  gap: "10px",
   paddingBottom: "50px",
   textAlign: "center",
 }));

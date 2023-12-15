@@ -86,9 +86,6 @@ export const CrowdfundList = () => {
 
   return (
     <CrowdfundListWrapper>
-      <CrowdfundListHeader>
-        <CrowdfundListTitle>Most Recent Q-Funds</CrowdfundListTitle>
-      </CrowdfundListHeader>
       <CrowdfundContainer container spacing={3} direction={"row"}>
         {crowdfunds.map((crowdfund: Crowdfund) => {
           const existingCrowdfund = hashMapCrowdfunds[crowdfund.id];
