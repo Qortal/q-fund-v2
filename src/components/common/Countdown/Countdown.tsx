@@ -10,7 +10,7 @@ import {
   CountdownRow,
   EstimatedTimeRemainingFont,
 } from "./Countdown-styles";
-import { getDurationFromBlocks } from "../../../utils/time.ts";
+import { getDaySummary, getDurationFromBlocks } from "../../../utils/time.ts";
 
 interface CountdownProps {
   endDate: moment.Moment;
@@ -34,6 +34,7 @@ export const Countdown: React.FC<CountdownProps> = ({
   const [timeRemainingMinutes, setTimeRemainingMinutes] = useState<
     number | null
   >(null);
+  const [blockCount, setBlockCount] = useState<number>(1440);
 
   // useEffect that runs the countdown timer
   useEffect(() => {
@@ -50,13 +51,13 @@ export const Countdown: React.FC<CountdownProps> = ({
         return;
       }
 
-      getDurationFromBlocks(duration.asMinutes()).then(
-        ({ days, hours, minutes }) => {
-          setTimeRemainingDays(days);
-          setTimeRemainingHours(hours);
-          setTimeRemainingMinutes(minutes);
-        }
+      const { days, hours, minutes } = getDurationFromBlocks(
+        duration.asMinutes(),
+        blockCount
       );
+      setTimeRemainingDays(days);
+      setTimeRemainingHours(hours);
+      setTimeRemainingMinutes(minutes);
     };
 
     // Ensure the crowdfund has not ended before running the countdown
@@ -72,6 +73,11 @@ export const Countdown: React.FC<CountdownProps> = ({
     };
   }, [blocksRemaining, endDate]);
 
+  useEffect(() => {
+    getDaySummary().then(response => {
+      setBlockCount(response.blockCount);
+    });
+  }, []);
   return (
     <>
       {!loadingAtInfo ? (

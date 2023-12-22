@@ -73,25 +73,24 @@ export const getDaySummary = async () => {
   })) as DaySummaryResponse;
 };
 
-export const getDurationFromBlocks = async (blocks: number) => {
-  return getDaySummary().then(response => {
-    const minutesPerDay = 60 * 24;
-    const blocksPerMinute = response.blockCount / minutesPerDay;
-    const duration = blocks / blocksPerMinute;
+export const getDurationFromBlocks = (blocks: number, blockCount: number) => {
+  const minutesPerDay = 60 * 24;
+  const blocksPerMinute = blockCount / minutesPerDay;
+  const duration = blocks / blocksPerMinute;
 
-    const days = Math.floor(duration / minutesPerDay);
-    const hours = Math.floor((duration % minutesPerDay) / 60);
-    const minutes = Math.floor(duration % 60);
+  const days = Math.floor(duration / minutesPerDay);
+  const hours = Math.floor((duration % minutesPerDay) / 60);
+  const minutes = Math.floor(duration % 60);
 
-    return { days, hours, minutes } as DayTime;
-  });
+  return { days, hours, minutes } as DayTime;
 };
 
-export const getBlocksInDuration = async (minutes: number) => {
-  return getDaySummary().then(response => {
-    const minutesPerDay = 60 * 24;
-    const blocksPerMinute = response.blockCount / minutesPerDay;
-    const blocksInDuration = minutes * blocksPerMinute;
-    return +truncateNumber(Math.abs(blocksInDuration), 0);
-  });
+export const getBlocksInDuration = async (
+  minutes: number,
+  blockCount: number
+) => {
+  const minutesPerDay = 60 * 24;
+  const blocksPerMinute = blockCount / minutesPerDay;
+  const blocksInDuration = minutes * blocksPerMinute;
+  return +truncateNumber(Math.abs(blocksInDuration), 0);
 };

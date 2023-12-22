@@ -145,16 +145,11 @@ export const NewCrowdfund = ({ editId, editContent }: NewCrowdfundProps) => {
   }, []);
 
   const diffInMins = React.useMemo(() => {
-    updateBlocksPerMinute();
     const blocksInDuration = getBlocksInDuration(
       dayjs().diff(qFundDuration, "minute")
     );
     return +blocksInDuration;
   }, [qFundDuration, blocksPerMinute]);
-
-  useEffect(() => {
-    updateBlocksPerMinute();
-  }, []);
 
   // Define the type for your POST request body
   interface PostRequestBody {
