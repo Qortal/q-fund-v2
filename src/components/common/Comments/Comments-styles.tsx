@@ -1,5 +1,7 @@
 import { styled } from "@mui/system";
 import { Card, Box, Typography, Button, TextField } from "@mui/material";
+import { donateButtonColor } from "../Donate/Donate-styles.tsx";
+import { changeLightness } from "../../../utils/numberFunctions.ts";
 
 export const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor:
@@ -271,10 +273,12 @@ export const CommentInput = styled(TextField)(({ theme }) => ({
 
 export const SubmitCommentButton = styled(Button)(({ theme }) => ({
   fontFamily: "Montserrat",
-  fontWeight: 400,
+  fontWeight: 800,
   letterSpacing: "0.2px",
-  fontSize: "15px",
-  backgroundColor: theme.palette.primary.main,
+  fontSize: "20px",
+  backgroundColor: donateButtonColor,
   color: "#ffffff",
   width: "75%",
+  height: "40px",
+  "&:hover": { backgroundColor: changeLightness(donateButtonColor, -10) },
 }));

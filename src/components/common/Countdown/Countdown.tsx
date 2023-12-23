@@ -10,6 +10,7 @@ import {
   CountdownRow,
   EstimatedTimeRemainingFont,
 } from "./Countdown-styles";
+import { getDaySummary, getDurationFromBlocks } from "../../../utils/time.ts";
 
 interface CountdownProps {
   endDate: moment.Moment;
@@ -33,6 +34,7 @@ export const Countdown: React.FC<CountdownProps> = ({
   const [timeRemainingMinutes, setTimeRemainingMinutes] = useState<
     number | null
   >(null);
+  const [blockCount, setBlockCount] = useState<number>(1440);
 
   // useEffect that runs the countdown timer
   useEffect(() => {
@@ -49,11 +51,10 @@ export const Countdown: React.FC<CountdownProps> = ({
         return;
       }
 
-      const totalMinutes = duration.asMinutes();
-      const days = Math.floor(totalMinutes / (60 * 24));
-      const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-      const minutes = Math.floor(totalMinutes % 60);
-
+      const { days, hours, minutes } = getDurationFromBlocks(
+        duration.asMinutes(),
+        blockCount
+      );
       setTimeRemainingDays(days);
       setTimeRemainingHours(hours);
       setTimeRemainingMinutes(minutes);
@@ -72,6 +73,11 @@ export const Countdown: React.FC<CountdownProps> = ({
     };
   }, [blocksRemaining, endDate]);
 
+  useEffect(() => {
+    getDaySummary().then(response => {
+      setBlockCount(response.blockCount);
+    });
+  }, []);
   return (
     <>
       {!loadingAtInfo ? (

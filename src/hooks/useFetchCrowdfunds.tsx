@@ -8,7 +8,7 @@ import {
 
 import { RootState } from "../state/store";
 import { fetchAndEvaluateCrowdfunds } from "../utils/fetchCrowdfunds";
-import { CROWDFUND_BASE } from "../constants";
+import { CROWDFUND_BASE } from "../constants/Identifiers.ts";
 
 export const useFetchCrowdfunds = () => {
   const dispatch = useDispatch();

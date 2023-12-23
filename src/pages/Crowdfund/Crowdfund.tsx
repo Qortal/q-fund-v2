@@ -15,7 +15,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DisplayHtml } from "../../components/common/DisplayHtml";
 import FileElement from "../../components/common/FileElement";
 import { setIsLoadingGlobal } from "../../state/features/globalSlice";
-import { CROWDFUND_BASE, REVIEW_BASE, UPDATE_BASE } from "../../constants";
+import {
+  CROWDFUND_BASE,
+  REVIEW_BASE,
+  UPDATE_BASE,
+} from "../../constants/Identifiers.ts";
 import { addToHashMap } from "../../state/features/crowdfundSlice";
 import {
   AboutMyCrowdfund,
@@ -60,10 +64,8 @@ import { CrowdfundLoader } from "./CrowdfundLoader";
 import { ReusableModalStyled } from "../../components/common/Reviews/QFundOwnerReviews-styles";
 import { QFundOwnerReviews } from "../../components/common/Reviews/QFundOwnerReviews";
 import DonorInfo from "../../components/common/Donate/DonorInfo";
-import {
-  SearchTransactionResponse,
-  searchTransactions,
-} from "qortal-app-utils";
+import { searchTransactions } from "../../utils/qortalRequestFunctions";
+import { SearchTransactionResponse } from "../../utils/qortalRequestTypes";
 
 export const Crowdfund = () => {
   const theme = useTheme();

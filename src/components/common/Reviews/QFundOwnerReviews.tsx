@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LazyLoad from "../../../components/common/LazyLoad";
 import { RootState } from "../../../state/store";
 import { AddReview } from "./AddReview/AddReview";
-import { REVIEW_BASE } from "../../../constants";
+import { REVIEW_BASE } from "../../../constants/Identifiers.ts";
 import {
   OwnerReview,
   upsertReviews,

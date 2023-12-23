@@ -11,6 +11,7 @@ import {
   NewCrowdfundTitle,
   CrowdfundActionButton,
   CrowdfundActionButtonRow,
+  CancelActionButton,
 } from "./Crowdfund-styles";
 
 import { Box, Button, Modal, useTheme } from "@mui/material";
@@ -24,7 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "../../state/features/notificationsSlice";
 import { objectToBase64 } from "../../utils/toBase64";
 import { RootState } from "../../state/store";
-import { ATTACHMENT_BASE, UPDATE_BASE } from "../../constants";
+import { ATTACHMENT_BASE, UPDATE_BASE } from "../../constants/Identifiers.ts";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween"; // Import the plugin
 import duration from "dayjs/plugin/duration";
@@ -343,16 +344,14 @@ export const NewUpdate = ({
             modules={modules}
           />
           <CrowdfundActionButtonRow>
-            <CrowdfundActionButton
+            <CancelActionButton
               onClick={() => {
                 onClose();
               }}
               variant="outlined"
-              color="error"
-              style={{ color: "#c92727ff" }}
             >
               Cancel
-            </CrowdfundActionButton>
+            </CancelActionButton>
             <CrowdfundActionButton
               variant="contained"
               onClick={() => {

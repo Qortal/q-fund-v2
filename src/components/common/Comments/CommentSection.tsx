@@ -6,7 +6,7 @@ import { styled } from "@mui/system";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../state/store";
 import { useNavigate, useLocation } from "react-router-dom";
-import { COMMENT_BASE } from "../../../constants";
+import { COMMENT_BASE } from "../../../constants/Identifiers.ts";
 import {
   CommentContainer,
   CommentEditorContainer,
