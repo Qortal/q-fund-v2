@@ -24,7 +24,7 @@ const DonorInfo = ({
 }: DonorInfoProps) => {
   const [displayModal, setDisplayModal] = useState<boolean>(false);
   const [donorData, setDonorData] = useState<ViewableDonorData[]>([]);
-
+  const [donorCount, setDonorCount] = useState<number>(0);
   const processOneDonor = (
     donorArray: ViewableDonorData[],
     donor: ViewableDonorData
@@ -57,6 +57,7 @@ const DonorInfo = ({
         });
       });
       setDonorData(processedDonorData);
+      setDonorCount(rawDonorData.length);
     });
   };
 
@@ -77,6 +78,7 @@ const DonorInfo = ({
       </Tooltip>
       <DonorModal
         donorData={donorData}
+        donorCount={donorCount}
         open={displayModal}
         closeModal={() => setDisplayModal(false)}
       />

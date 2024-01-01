@@ -16,13 +16,18 @@ import { truncateNumber } from "../../../utils/numberFunctions.ts";
 
 interface DonorModalProps {
   donorData: ViewableDonorData[];
+  donorCount: number;
   closeModal: () => void;
   open: boolean;
 }
 
-const DonorModal = ({ donorData, closeModal, open }: DonorModalProps) => {
+const DonorModal = ({
+  donorData,
+  donorCount,
+  closeModal,
+  open,
+}: DonorModalProps) => {
   const getAverageDonation = () => {
-    const donorCount = donorData.length;
     if (donorCount === 0) return 0;
     let donorSum = 0;
     donorData.map(data => {
@@ -39,7 +44,7 @@ const DonorModal = ({ donorData, closeModal, open }: DonorModalProps) => {
       aria-describedby="modal-description"
       onClose={closeModal}
     >
-      <ModalBody>
+      <ModalBody sx={{ width: "75vw", maxWidth: "75vw" }}>
         <Box
           sx={{
             display: "flex",
@@ -47,13 +52,13 @@ const DonorModal = ({ donorData, closeModal, open }: DonorModalProps) => {
             justifyContent: "space-between",
           }}
         >
-          <TableContainer sx={{ maxHeight: "300px" }}>
+          <TableContainer sx={{ maxHeight: "80vw" }}>
             <Table align="center" stickyHeader>
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Amount</TableCell>
+                  <TableCell>Amount (Total)</TableCell>
                   <TableCell>Address</TableCell>
                 </TableRow>
               </TableHead>
@@ -71,7 +76,7 @@ const DonorModal = ({ donorData, closeModal, open }: DonorModalProps) => {
           </TableContainer>
         </Box>
         <Stack>
-          <h4>Total # of Donations: {donorData.length}</h4>
+          <h4>Total # of Donations: {donorCount}</h4>
           <h4>Average Donation Amount: {getAverageDonation()}</h4>
         </Stack>
         <Button onClick={closeModal}>Close</Button>
