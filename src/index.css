@@ -151,6 +151,10 @@ body::-webkit-scrollbar-thumb:hover {
   fill: red;
 }
 
+a {
+  color: #0254f1;
+}
+
 .qortal-link {
   text-decoration: none; /* Removes the underline */
   color: inherit; /* Inherits the color of the parent element */
