@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../state/store";
@@ -84,13 +84,17 @@ export const CrowdfundList = () => {
     }
   }, [getCrowdfundHandlerMount, globalCrowdfunds]);
 
+  const filteredCrowdfunds = useMemo(() => {
+    return crowdfunds.filter((crowdfund: Crowdfund) => hashMapCrowdfunds[crowdfund.id]?.isValid);
+  }, [crowdfunds, hashMapCrowdfunds]);
+
   return (
     <CrowdfundListWrapper>
       <CrowdfundListHeader>
         <CrowdfundListTitle>Most Recent Q-Funds</CrowdfundListTitle>
       </CrowdfundListHeader>
       <CrowdfundContainer container spacing={3} direction={"row"}>
-        {crowdfunds.map((crowdfund: Crowdfund) => {
+        {filteredCrowdfunds.map((crowdfund: Crowdfund) => {
           const existingCrowdfund = hashMapCrowdfunds[crowdfund.id];
           let hasHash = false;
           let crowdfundObj = crowdfund;

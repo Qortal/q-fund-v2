@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToHashMap,
+  removeFromHashMap,
   upsertCrowdfunds,
   Crowdfund,
 } from "../state/features/crowdfundSlice";
@@ -48,8 +49,11 @@ export const useFetchCrowdfunds = () => {
       identifier,
       content,
     });
-
-    dispatch(addToHashMap(res));
+    if (res?.isValid) {
+      dispatch(addToHashMap(res));
+    } else {
+      dispatch(removeFromHashMap(identifier));
+    }
   };
 
   const getCrowdfunds = React.useCallback(async () => {
